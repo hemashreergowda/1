@@ -1,0 +1,43 @@
+---------Client-----------
+
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.util.Scanner;
+
+public class Client {
+    public static void main(String args[])throws Exception {
+        DatagramSocket client = new DatagramSocket();
+        InetAddress IPAddress = InetAddress.getByName("localhost");
+        Scanner sc=new Scanner(System.in);
+        System.out.println("Enter IP to get MAC");
+        String x=sc.nextLine().trim()+"      ";
+        DatagramPacket packet = new DatagramPacket(x.getBytes(), x.length(), IPAddress, 6666);
+        client.send(packet);
+        client.receive(packet);
+        System.out.println("Its Mac is :" + new String(packet.getData()));
+
+    }
+}
+
+---------Server-----------
+
+import java.net.*;
+import java.util.*;
+
+public class Server {
+    public static void main(String args[]) throws Exception {
+        byte[] buffer = new byte[1024];
+        Map map=new HashMap<>();
+        map.put("192.168.43.1","D4:3D:7E:12:A3:D9");
+        map.put("192.168.43.2","E4:3D:12:A2:A3:AA");
+        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+        DatagramSocket server = new DatagramSocket(6666);
+        server.receive(packet);
+        String ip= new String(packet.getData()).trim();
+        System.out.println(ip);
+        String mac=map.getOrDefault(ip,"Host not found");
+        packet.setData(mac.getBytes());
+        server.send(packet);
+    }
+}
