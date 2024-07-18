@@ -1,0 +1,58 @@
+    import java.util.Scanner;
+
+    public class DistanceVectorRouting {
+        private static final int INF = 999; // Representing infinity
+    
+        public static void main(String[] args) {
+            Scanner scanner = new Scanner(System.in);
+    
+            System.out.print("Enter the number of vertices: ");
+            int nodes = scanner.nextInt();
+    
+            int[][] distance = new int[nodes][nodes];
+    
+            // Input the cost matrix
+            System.out.println("Enter the adjacency matrix:");
+            for (int i = 0; i < nodes; i++) {
+                for (int j = 0; j < nodes; j++) {
+                    distance[i][j] = scanner.nextInt();
+                    if (i != j && distance[i][j] == 0) {
+                        distance[i][j] = INF;
+                    }
+                }
+            }
+    
+            // Distance Vector Routing Algorithm
+            boolean updated;
+            do {
+                updated = false;
+                for (int i = 0; i < nodes; i++) {
+                    for (int j = 0; j < nodes; j++) {
+                        for (int k = 0; k < nodes; k++) {
+                            if (distance[i][k] + distance[k][j] < distance[i][j]) {
+                                distance[i][j] = distance[i][k] + distance[k][j];
+                                updated = true;
+                            }
+                        }
+                    }
+                }
+            } while (updated);
+    
+            // Input source vertex
+            System.out.print("Enter the source vertex: ");
+            int source = scanner.nextInt() - 1;
+    
+            // Display distances from the source vertex
+            System.out.println("Distances from source " + (source + 1) + ":");
+            for (int i = 0; i < nodes; i++) {
+                if (distance[source][i] == INF) {
+                    System.out.println("distance from source " + (source + 1) + " to " + (i + 1) + " is INF");
+                } else {
+                    System.out.println("distance from source " + (source + 1) + " to " + (i + 1) + " is " + distance[source][i]);
+                }
+            }
+    
+            scanner.close();
+        }
+    }
+    
